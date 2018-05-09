@@ -42,8 +42,8 @@ def strassen(A, B):
 
 
 def _strassen_rec(A, B):
-    if A.shape[0] <= 1:
-        return A * B 
+    if A.shape[0] <= 16:
+        return straightway(A, B) 
     else:
         n = A.shape[0]
         a11 = A[:n//2, :n//2]
