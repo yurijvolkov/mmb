@@ -36,8 +36,14 @@ def strassen(A, B):
         A = _wrap_matrix_(A, n)
         B = _wrap_matrix_(B, n)
 
-    if A.shape[0] == 1:
-        return np.array( [[ A[0, 0] * B[0, 0] ]] )
+    C = _strassen_rec(A, B)
+
+    return C[:init_shape_A[0], :init_shape_B[1]]
+
+
+def _strassen_rec(A, B):
+    if A.shape[0] <= 1:
+        return A * B 
     else:
         n = A.shape[0]
         a11 = A[:n//2, :n//2]
@@ -49,13 +55,13 @@ def strassen(A, B):
         b21 = B[n//2:, :n//2]
         b22 = B[n//2:, n//2:]
 
-        k1 = strassen(a11 + a22, b11 + b22)
-        k2 = strassen(a21 + a22, b11)
-        k3 = strassen(a11, b12 - b22)
-        k4 = strassen(a22, b21 - b11)
-        k5 = strassen(a11 + a12, b22)
-        k6 = strassen(a21 - a11, b11 + b12)
-        k7 = strassen(a12 - a22, b21 + b22)
+        k1 = _strassen_rec(a11 + a22, b11 + b22)
+        k2 = _strassen_rec(a21 + a22, b11)
+        k3 = _strassen_rec(a11, b12 - b22)
+        k4 = _strassen_rec(a22, b21 - b11)
+        k5 = _strassen_rec(a11 + a12, b22)
+        k6 = _strassen_rec(a21 - a11, b11 + b12)
+        k7 = _strassen_rec(a12 - a22, b21 + b22)
 
         c11 = k1 + k4 - k5 + k7
         c12 = k3 + k5
@@ -65,7 +71,8 @@ def strassen(A, B):
         C = np.block([ [c11, c12],
                        [c21, c22] ])
         
-        return C[:init_shape_A[0], :init_shape_B[1]]
+        return C
+
 
 def winograd(A, B):
     init_shape_A = A.shape
@@ -97,8 +104,8 @@ def winograd(A, B):
 
 
 def check_multiplication(func):
-    A = np.random.rand(17, 20)
-    B = np.random.rand(20, 31)
+    A = np.random.rand(121, 100)
+    B = np.random.rand(100, 119)
 
     C_numpy = A @ B
     C_custom = func(A, B)
@@ -114,10 +121,3 @@ if __name__ == "__main__":
     print(f"Strassen correct: {check_multiplication(strassen)}") 
     print(f"Winograd correct: {check_multiplication(winograd)}")
    
-#   A = np.random.rand(20, 20)
-#   B = np.random.rand(20, 20)
-
-
-
-
-
