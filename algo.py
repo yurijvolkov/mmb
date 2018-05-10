@@ -3,6 +3,18 @@ import math
 import numpy as np
 
 def straightway(A, B):
+    """
+        Simplest way to multiply matrices.
+        (By rowXcolumns rule)
+
+        Time complexity: O(N^3)
+
+        :param A: np.ndarray
+        :param B: np.ndarray
+
+        :return: np.ndarray
+    """
+
     if A.shape[1] != B.shape[0]:
         raise ValueError('Shapes are incorrect {A.shape[1] != B.shape[0]}')
     
@@ -17,6 +29,18 @@ def straightway(A, B):
     return C
 
 def strassen(A, B):
+    """
+        Strassen algorithm implented as it described in 
+        Matrix analysis and linear algebra ( by E. E. Tyrtyshnikov )
+
+        Time complexity: ~O(N^2.8)
+
+        :param A: np.ndarray
+        :param B: np.ndarray
+
+        :return: np.ndarray
+    """
+
     init_shape_A = A.shape
     init_shape_B = B.shape
 
@@ -42,6 +66,11 @@ def strassen(A, B):
 
 
 def _strassen_rec(A, B):
+    """
+        Recursive part of Strassen algo.
+        (MUST NOT BE USED DIRECTLY)
+    """
+
     if A.shape[0] <= 16:
         return straightway(A, B) 
     else:
@@ -75,6 +104,19 @@ def _strassen_rec(A, B):
 
 
 def winograd(A, B):
+    """
+        Winograd algorithm implented as it described in 
+        Matrix analysis and linear algebra ( by E. E. Tyrtyshnikov )
+        It does less multiplications than 'Straight way' algo.
+
+        Time complexity: O(N^3) 
+
+        :param A: np.ndarray
+        :param B: np.ndarray
+
+        :return: np.ndarray
+    """
+
     init_shape_A = A.shape
     init_shape_B = B.shape
 
@@ -104,6 +146,15 @@ def winograd(A, B):
 
 
 def check_multiplication(func):
+    """
+        Compares implemented algorithm with algo 
+        implemented in numpy
+
+        :param func: function
+
+        :return: bool
+    """
+
     A = np.random.rand(121, 100)
     B = np.random.rand(100, 119)
 
